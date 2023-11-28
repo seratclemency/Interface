@@ -28,11 +28,7 @@ class MyKivyMDApp(MDApp):
                                 size_hint=(0.8, None),
                                 on_text_validate=self.start_google_search)
 
-        button1 = MDRaisedButton(text='Контакты',
-                                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                 size_hint=(0.8, None),
-                                 on_press=self.show_contacts)
-        button2 = MDRaisedButton(text='Инструкция',
+        button1 = MDRaisedButton(text='Инструкция',
                                  pos_hint={'center_x': 0.5, 'center_y': 0.6},
                                  size_hint=(0.8, None),
                                  on_press=self.show_instructions)
@@ -49,7 +45,6 @@ class MyKivyMDApp(MDApp):
 
         screen.add_widget(self.textinput)
         screen.add_widget(button1)
-        screen.add_widget(button2)
         screen.add_widget(switch)
         screen.add_widget(dark_theme)
         screen.add_widget(self.intra)
@@ -58,11 +53,6 @@ class MyKivyMDApp(MDApp):
     def show_instructions(self, instance):
         dialog = MDDialog(title='Инструкция',
                           text='Interface - это простое приложение, которое ищет рабочие сайты по вашему запросу. Вы вводите запрос на определённом языке (доступны английский и русский) и нажимаете на "Enter". Когда вы вводите запрос на русском языке вы должны оставить свич в правом верхнем углу в выключенном положении, а если на английском языке, то переключить свич в включённое положение. После этого у вас создастся файл по пути /storage/emulated/0 и в нём будут ссылки на рабочие сайты. Также есть функция для парсинга dns серверов для Intra. Для парсинга нажмите на соответствующую кнопку и по пути /storage/emulated/0 появится файл dns_servers.txt. Внизу находится свич темы приложения.')
-        dialog.open()
-
-    def show_contacts(self, instance):
-        dialog = MDDialog(title='Связь с разработчиком',
-                          text='Made by serat in Turkmenistan\nПерепродаже не подлежит!\nTelegram: @are_you_serat\nLink: @serat')
         dialog.open()
 
     def start_google_search(self, instance):
