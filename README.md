@@ -7,4 +7,4 @@ Interface - это простое приложение написанное на
 Установить buildozer. Инструкция: https://buildozer.readthedocs.io/en/latest/installation.html
 Склонировать этот репозиторий: https://github.com/SeratKlemence/Interface.git
 Можете отредактировать файл buildozer.spec по вашему усмотрению.
-Перейти по директории к скронированному гиту, вызвать терминал и прописать команду buildozer android debug.
+Перейти по директории к скронированному гиту, вызвать терминал и прописать команду buildozer android debug. Это скомпилирует дебаг версию приложения.
