@@ -101,7 +101,7 @@ class MyKivyMDApp(MDApp):
             links = soup.find_all('a', href=re.compile(r'dns-query$'))
             for link in links:
                 full_url = link['href']
-                with open('dns_servers.txt', 'a') as file:
+                with open('/storage/emulated/0/dns_servers.txt', 'a') as file:
                     file.write(full_url + '\n')
         except Exception:
             pass
@@ -113,10 +113,10 @@ class MyKivyMDApp(MDApp):
                 try:
                     req = requests.get(i, timeout=1)
                     if req.status_code == 200:
-                        with open('working_links.txt', 'a') as file:
+                        with open('/storage/emulated/0/working_links.txt', 'a') as file:
                             file.write(i + '\n')
                 except Exception:
-                    with open('not_working_links.txt', 'a') as file:
+                    with open('/storage/emulated/0/not_working_links.txt', 'a') as file:
                         file.write(i + '\n')
         elif self.language == 'EN':
             ssl._create_default_https_context = ssl._create_unverified_context
@@ -124,10 +124,10 @@ class MyKivyMDApp(MDApp):
                 try:
                     req = requests.get(i, timeout=1)
                     if req.status_code == 200:
-                        with open('working_links.txt', 'a') as file:
+                        with open('/storage/emulated/0/working_links.txt', 'a') as file:
                             file.write(i + '\n')
                 except Exception:
-                    with open('not_working_links.txt', 'a') as file:
+                    with open('/storage/emulated/0/not_working_links.txt', 'a') as file:
                         file.write(i + '\n')
 
 if __name__ == "__main__":
