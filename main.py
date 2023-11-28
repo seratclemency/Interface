@@ -4,7 +4,6 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.selectioncontrol import MDSwitch
-from kivymd.uix.boxlayout import MDBoxLayout
 from googlesearch import search
 import requests
 from bs4 import BeautifulSoup
