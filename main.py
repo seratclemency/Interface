@@ -2,9 +2,12 @@ from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.button import MDIconButton
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.selectioncontrol import MDSwitch
+from kivy.storage.jsonstore import JsonStore
 from googlesearch import search
+import webbrowser
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -21,32 +24,51 @@ class MyKivyMDApp(MDApp):
     def build(self):
         self.theme_cls.primary_palette = 'Red' #Устанавливаем оттенок приложения на Красный
         screen = MDScreen() #Создаём объект screen который представляет собой окно приложения
+        if not os.path.exists('/storage/emulated/0/Interface/settings.json'):
+            with open('/storage/emulated/0/Interface/settings.json', 'w') as file:
+                file.write('{"switch": {"state": false}, "theme": {"state": "Light"}, "language_switch": {"state": false}, "language": {"state": "EN"}}')
+        else:
+            pass
+
+        self.store = JsonStore('settings.json')
 
         textinput = MDTextField(hint_text='Введите запрос',
                                 pos_hint={'center_x': 0.5, 'center_y': 0.8},
                                 size_hint=(0.8, None),
                                 on_text_validate=self.start_google_search) #Устанавливаем поле для ввода запроса
 
-        button = MDRaisedButton(text='Инструкция',
+        instruction_button = MDRaisedButton(text='Инструкция',
                                  pos_hint={'center_x': 0.5, 'center_y': 0.6},
                                  size_hint=(0.8, None),
                                  on_press=self.show_instructions) #Устанавливаем кнопку
-        intra = MDRaisedButton(text='Спарсить сервера Intra',
+        intra_button = MDRaisedButton(text='Спарсить сервера Intra',
                                  pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                  size_hint=(0.8, None),
                                  on_press=self.start_parse_intra) #Ещё кнопка
+        github_button = MDIconButton(icon=r'C:\Users\SERDAROV\Downloads\github.png',
+                                     pos_hint={'center_x': 0.9, 'center_y': 0.1},
+                                     on_press=self.open_github_link)
+        contacts_button = MDRaisedButton(text='Контакты',
+                                         pos_hint={'center_x': 0.5, 'center_y': 0.4},
+                                         size_hint=(0.8, None),
+                                         on_press=self.show_contacts)
 
-        dark_theme = MDSwitch(pos_hint={'center_x': 0.5, 'center_y': 0.1}) #Устанавливаем свич для переключения тёмной темы
+        self.theme_cls.theme_style = self.store.get('theme')['state']
+        self.language = self.store.get('language')['state']
+
+        dark_theme = MDSwitch(pos_hint={'center_x': 0.5, 'center_y': 0.1}, active=self.store.get('switch')['state']) #Устанавливаем свич для переключения тёмной темы
         dark_theme.bind(active=self.switch_theme) #Привязываем свич к методу switch_theme
 
-        switch = MDSwitch(pos_hint={'center_x': 0.8, 'center_y': 0.9}) #Устанавливаем свич для переключения языка
+        switch = MDSwitch(pos_hint={'center_x': 0.8, 'center_y': 0.9}, active=self.store.get('language_switch')['state']) #Устанавливаем свич для переключения языка
         switch.bind(active=self.switch) #Привязываем свич к методу switch
 
         screen.add_widget(textinput) #Добавляем все кнопки в макет
-        screen.add_widget(button)
         screen.add_widget(switch)
         screen.add_widget(dark_theme)
-        screen.add_widget(intra)
+        screen.add_widget(intra_button)
+        screen.add_widget(instruction_button)
+        screen.add_widget(github_button)
+        screen.add_widget(contacts_button)
         return screen #Возвращаем макет
 
     def show_instructions(self, instance): #Метод для показа диалогового окна Инструкций
@@ -54,6 +76,14 @@ class MyKivyMDApp(MDApp):
                           text='Interface - это простое приложение, которое ищет рабочие сайты по вашему запросу. Вы вводите запрос на определённом языке (доступны английский и русский) и нажимаете на "Enter". Когда вы вводите запрос на русском языке вы должны оставить свич в правом верхнем углу в выключенном положении, а если на английском языке, то переключить свич в включённое положение. После этого у вас создастся файл по пути /storage/emulated/0 и в нём будут ссылки на рабочие сайты. Также есть функция для парсинга dns серверов для Intra. Для парсинга нажмите на соответствующую кнопку и по пути /storage/emulated/0 появится файл dns_servers.txt. Внизу находится свич темы приложения.') #Создаём окно
         dialog.open() #Открываем окно
 
+    def show_contacts(self, instance):
+        dialog = MDDialog(title='Контакты',
+                          text='Made by serat in Turkmenistan.\nЕсли возникнут проблемы, то создайте issue на Github.\nЕсли хотите купить шавуху :)\nTelegram: @are_you_serat\nLink: @serat')
+        dialog.open()
+
+    def open_github_link(self, instance):
+        webbrowser.open('https://github.com/SeratKlemence/Interface')
+        
     def start_google_search(self, instance): #Метод для  начала проверки сайтов через новый поток
         try:
             os.remove('/storage/emulated/0/working_links.txt') #Удаление файлов с прошлой проверки если они есть
@@ -81,14 +111,22 @@ class MyKivyMDApp(MDApp):
 
     def switch_theme(self, instance, value): #Переключение темы. Если value = True, переключить темы на тёмную, иначе светлая
         if value:
+            self.store.put('switch', state=True)
+            self.store.put('theme', state='Dark')
             self.theme_cls.theme_style = 'Dark' #Тёмный фон
         else:
+            self.store.put('switch', state=False)
+            self.store.put('theme', state='Light')
             self.theme_cls.theme_style = 'Light' #Светлый фон
 
     def switch(self, instance, value): #Переключение языка. Если value = True, переключить язык на русский, иначе английский
         if value:
+            self.store.put('language_switch', state=True)
+            self.store.put('language', state='RU')
             self.language = 'RU'
         else:
+            self.store.put('language_switch', state=False)
+            self.store.put('language', state='EN')
             self.language = 'EN'
 
     def parse_intra(self, instance): #Метод для парсинга серверов
