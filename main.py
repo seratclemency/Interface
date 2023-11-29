@@ -45,7 +45,7 @@ class MyKivyMDApp(MDApp):
                                  pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                  size_hint=(0.8, None),
                                  on_press=self.start_parse_intra) #Ещё кнопка
-        github_button = MDIconButton(icon=r'C:\Users\SERDAROV\Downloads\github.png',
+        github_button = MDIconButton(icon='@my_icon.png',
                                      pos_hint={'center_x': 0.9, 'center_y': 0.1},
                                      on_press=self.open_github_link)
         contacts_button = MDRaisedButton(text='Контакты',
