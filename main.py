@@ -24,13 +24,15 @@ class MyKivyMDApp(MDApp):
     def build(self):
         self.theme_cls.primary_palette = 'Red' #Устанавливаем оттенок приложения на Красный
         screen = MDScreen() #Создаём объект screen который представляет собой окно приложения
-        if not os.path.exists('/storage/emulated/0/Interface/settings.json'):
-            with open('/storage/emulated/0/Interface/settings.json', 'w') as file:
-                file.write('{"switch": {"state": false}, "theme": {"state": "Light"}, "language_switch": {"state": false}, "language": {"state": "EN"}}')
+        if not os.path.exists('/storage/emulated/0/Android/data/com.serat.onelove'):
+            os.mkdir('/storage/emulated/0/Android/data/com.serat.onelove')
+            if not os.path.exists('/storage/emulated/0/Android/data/com.serat.onelove/settings.json'):
+                with open('/storage/emulated/0/Android/data/com.serat.onelove/settings.json', 'w') as file:
+                    file.write('{"switch": {"state": false}, "theme": {"state": "Light"}, "language_switch": {"state": false}, "language": {"state": "EN"}}')
         else:
             pass
 
-        self.store = JsonStore('settings.json')
+        self.store = JsonStore('/storage/emulated/0/Android/data/com.serat.onelove/settings.json')
 
         textinput = MDTextField(hint_text='Введите запрос',
                                 pos_hint={'center_x': 0.5, 'center_y': 0.8},
@@ -45,7 +47,7 @@ class MyKivyMDApp(MDApp):
                                  pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                  size_hint=(0.8, None),
                                  on_press=self.start_parse_intra) #Ещё кнопка
-        github_button = MDIconButton(icon='@my_icon.png',
+        github_button = MDIconButton(icon='github',
                                      pos_hint={'center_x': 0.9, 'center_y': 0.1},
                                      on_press=self.open_github_link)
         contacts_button = MDRaisedButton(text='Контакты',
@@ -83,11 +85,11 @@ class MyKivyMDApp(MDApp):
 
     def open_github_link(self, instance):
         webbrowser.open('https://github.com/SeratKlemence/Interface')
-        
+
     def start_google_search(self, instance): #Метод для  начала проверки сайтов через новый поток
         try:
-            os.remove('/storage/emulated/0/working_links.txt') #Удаление файлов с прошлой проверки если они есть
-            os.remove('/storage/emulated/0/not_working_links.txt')
+            os.remove('/storage/emulated/0/Android/data/com.serat.onelove/working_links.txt') #Удаление файлов с прошлой проверки если они есть
+            os.remove('/storage/emulated/0/Android/data/com.serat.onelove/not_working_links.txt')
         except Exception:
             pass
         self.show_start_dialog('Проверка началась. Это долго. Пожалуйста подождите около 5 минут и не выходите из приложения.')
@@ -103,7 +105,7 @@ class MyKivyMDApp(MDApp):
 
     def start_parse_intra(self, instance): #Метод для  начала парсинга серверов для Intra через новый поток
         try:
-            os.remove('/storage/emulated/0/dns_servers.txt')
+            os.remove('/storage/emulated/0/Android/data/com.serat.onelove/dns_servers.txt')
         except Exception:
             pass
         self.show_start_intra_dialog('Парсинг закончился. Пожалуйста проверьте хранилище на наличие файла dns_servers.txt.')
@@ -138,7 +140,7 @@ class MyKivyMDApp(MDApp):
             links = soup.find_all('a', href=re.compile(r'dns-query$')) #Ищем только сервера в HTML коде которые имеют dns-query
             for link in links:
                 full_url = link['href'] #Получаем ссылки
-                with open('/storage/emulated/0/dns_servers.txt', 'a') as file: #Создаём файл
+                with open('/storage/emulated/0/Android/data/com.serat.onelove/dns_servers.txt', 'a') as file: #Создаём файл
                     file.write(full_url + '\n') #Записываем в файл
         except Exception:
             pass
@@ -150,10 +152,10 @@ class MyKivyMDApp(MDApp):
                 try:
                     req = requests.get(i, timeout=1) #Отправка get запроса с таймаутом в 1 секунду
                     if req.status_code == 200: #Если статус код запроса равен 200, то сайт рабочий
-                        with open('/storage/emulated/0/working_links.txt', 'a') as file: #Создаём файл working_links.txt
+                        with open('/storage/emulated/0/Android/data/com.serat.onelove/working_links.txt', 'a') as file: #Создаём файл working_links.txt
                             file.write(i + '\n') #Записываем сайты в файл working_links.txt
                 except Exception:
-                    with open('/storage/emulated/0/not_working_links.txt', 'a') as file: #Иначе создаём файл not_working_links.txt
+                    with open('/storage/emulated/0/Android/data/com.serat.onelove/not_working_links.txt', 'a') as file: #Иначе создаём файл not_working_links.txt
                         file.write(i + '\n') #Записываем не рабочие сайты в файл working_links.txt
         elif self.language == 'EN': #Всё тоже самое только для английского языка
             ssl._create_default_https_context = ssl._create_unverified_context
@@ -161,10 +163,10 @@ class MyKivyMDApp(MDApp):
                 try:
                     req = requests.get(i, timeout=1)
                     if req.status_code == 200:
-                        with open('/storage/emulated/0/working_links.txt', 'a') as file:
+                        with open('/storage/emulated/0/Android/data/com.serat.onelove/working_links.txt', 'a') as file:
                             file.write(i + '\n')
                 except Exception:
-                    with open('/storage/emulated/0/not_working_links.txt', 'a') as file:
+                    with open('/storage/emulated/0/Android/data/com.serat.onelove/not_working_links.txt', 'a') as file:
                         file.write(i + '\n')
 
 if __name__ == "__main__":
